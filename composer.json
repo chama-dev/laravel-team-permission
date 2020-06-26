@@ -1,0 +1,65 @@
+{
+    "name": "chama-dev/laravel-team-permission",
+    "description": "Set permissions for each member on the team.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Leonardo Carmo",
+            "email": "leonardo+packs@chama.dev",
+            "role": "Developer"
+        }
+    ],
+    "homepage": "https://github.com/chama-dev/laravel-team-permission",
+    "require": {
+        "php": "^7.4",
+        "illuminate/bus": "^7.0",
+        "illuminate/console": "^7.0",
+        "illuminate/database": "^7.0",
+        "illuminate/pipeline": "^7.0",
+        "illuminate/support": "^7.0",
+        "symfony/console": "^5.0",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "ext-json": "*",
+        "ext-pdo_sqlite": "*",
+        "doctrine/dbal": "^2.5.2",
+        "fzaninotto/faker": "^1.9",
+        "matt-allan/laravel-code-style": "^0.5.1",
+        "mockery/mockery": "^1.3",
+        "nunomaduro/collision": "^4.2",
+        "orchestra/testbench": "^5.0",
+        "phpunit/phpunit": "^9.1",
+        "roave/security-advisories": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Chama\\TeamPermission\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Chama\\TeamPermission\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Chama\\TeamPermission\\TeamPermissionServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "cs": [
+            "vendor/bin/php-cs-fixer fix"
+        ],
+        "test": [
+            "vendor/bin/phpunit"
+        ]
+    }
+}

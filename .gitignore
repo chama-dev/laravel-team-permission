@@ -1,0 +1,13 @@
+/.idea
+/.idea/*
+.phpstorm.meta.php
+_ide_helper.php
+build
+vendor
+tests/TestSupport/temp
+tests/temp
+composer.lock
+phpunit.xml
+.env
+.phpunit.result.cache
+.php_cs.cache

@@ -1,0 +1,68 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateTeamPermissionTable extends Migration
+{
+
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up(): void
+    {
+
+        Schema::create('team_roles', function (Blueprint $table) {
+            $table->id();
+            $table->morphs('team');
+            $table->string('name', 100);
+            $table->boolean('enabled')->default(true);
+            $table->index('enabled');
+            $table->index(['team_type', 'team_id', 'enabled'], 'team_enabled_index');
+            $table->json('permissions')->nullable();
+            $table->string('description')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('team_members', function (Blueprint $table) {
+            $table->id();
+            // Team Roles
+            $table->bigInteger('team_role_id')->unsigned();
+            $table->foreign('team_role_id')
+                ->references('id')
+                ->on('team_roles')
+                ->onDelete('restrict');
+            // Users
+            $table->bigInteger('user_id')->unsigned();
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('restrict');
+
+            // Boolean to control which has permission enabled
+            $table->boolean('enabled')->default(true);
+            $table->index('enabled');
+            $table->index(['team_role_id', 'user_id'], 'team_role_user_index');
+            $table->index(['team_role_id', 'user_id', 'enabled'], 'team_role_user_enabled_index');
+
+            // Custom permissions for each user
+            $table->json('granted')->nullable();
+            $table->json('denied')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down(): void
+    {
+        Schema::drop('team_members');
+        Schema::drop('team_roles');
+    }
+}
