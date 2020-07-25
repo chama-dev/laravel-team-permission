@@ -4,8 +4,7 @@
 namespace Chama\TeamPermission\Tests;
 
 use Chama\TeamPermission\Tests\Models\Gym;
-use Chama\TeamPermission\Tests\Models\GymRole;
-use Chama\TeamPermission\Tests\Models\Team\Role;
+use Chama\TeamPermission\Models\TeamRole;
 use Chama\TeamPermission\Tests\Models\User;
 
 class CreateTeamRoleTest extends TestCase
@@ -21,10 +20,10 @@ class CreateTeamRoleTest extends TestCase
 
         $this->assertCount(0, $gym->roles);
 
-        /* @var Role $role */
+        /* @var TeamRole $role */
 
-        $gym->roles()->save($instructorRole = factory(Role::class)->state('spinning_instructor')->make());
-        $gym->roles()->save($chiefInstructorRole = factory(Role::class)->state('chief_spinning_instructor')->make());
+        $gym->roles()->save($instructorRole = factory(TeamRole::class)->state('spinning_instructor')->make());
+        $gym->roles()->save($chiefInstructorRole = factory(TeamRole::class)->state('chief_spinning_instructor')->make());
         $gym->refresh();
         $this->assertCount(2, $gym->roles);
         $this->assertEquals($gym->getKey(), $instructorRole->getAttribute('team_id'));

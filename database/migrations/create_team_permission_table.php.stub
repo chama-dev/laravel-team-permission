@@ -48,9 +48,9 @@ class CreateTeamPermissionTable extends Migration
             $table->index(['team_role_id', 'user_id'], 'team_role_user_index');
             $table->index(['team_role_id', 'user_id', 'enabled'], 'team_role_user_enabled_index');
 
-            // Custom permissions for each user
-            $table->json('granted')->nullable();
-            $table->json('denied')->nullable();
+            // Custom permissions for each user.
+            // They are reverse hierarchy, override team role
+            $table->json('permissions')->nullable();
             $table->timestamps();
         });
     }

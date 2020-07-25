@@ -7,6 +7,7 @@ use Chama\TeamPermission\Tests\Models\User;
 use Chama\TeamPermission\Tests\Models\Gym;
 use CreateTeamPermissionTable;
 use Faker\Factory;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Arr;
@@ -29,6 +30,10 @@ abstract class TestCase extends OrchestraTestCase
     public function setUp(): void
     {
         $this->checkCustomRequirements();
+
+        Relation::morphMap([
+            'gym' => Gym::class,
+        ]);
 
         parent::setUp();
         $this->setupFaker();
@@ -125,7 +130,7 @@ abstract class TestCase extends OrchestraTestCase
 //        return Activity::all()->last();
 //    }
 
-    public function markTestAsPassed()
+    public function markTestAsPassed(): void
     {
         $this->assertTrue(true);
     }

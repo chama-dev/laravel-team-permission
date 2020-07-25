@@ -4,7 +4,7 @@
 namespace Chama\TeamPermission\Http\Middleware;
 
 use Closure;
-use Chama\TeamPermission\Contracts\IGateKeeperRepository;
+use Chama\TeamPermission\Contracts\GateKeeperInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 
 abstract class GateKeeperMiddleware
@@ -19,16 +19,16 @@ abstract class GateKeeperMiddleware
     ];
 
     /**
-     * @var IGateKeeperRepository
+     * @var GateKeeperInterface
      */
     private $team;
 
     /**
      * Gate Keeper constructor.
      *
-     * @param IGateKeeperRepository $team
+     * @param GateKeeperInterface $team
      */
-    public function __construct(IGateKeeperRepository $team)
+    public function __construct(GateKeeperInterface $team)
     {
         $this->team = $team;
     }

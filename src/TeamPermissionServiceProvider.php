@@ -2,8 +2,7 @@
 
 namespace Chama\TeamPermission;
 
-use Chama\TeamPermission\Contracts\IGateKeeperRepository;
-use Chama\TeamPermission\Repositories\GateKeeperRepository;
+use Chama\TeamPermission\Contracts\GateKeeperInterface;
 use Illuminate\Support\ServiceProvider;
 
 class TeamPermissionServiceProvider extends ServiceProvider
@@ -11,10 +10,10 @@ class TeamPermissionServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/teampermission.php' => config_path('teampermission.php'),
+            __DIR__ . '/../config/team_permission.php' => config_path('team_permission.php'),
         ], 'config');
 
-        $this->mergeConfigFrom(__DIR__ . '/../config/teampermission.php', 'teampermission');
+        $this->mergeConfigFrom(__DIR__ . '/../config/team_permission.php', 'team_permission');
 
         if (!class_exists('CreateTeamPermissionTable')) {
             $timestamp = date('Y_m_d_His', time());
@@ -28,7 +27,6 @@ class TeamPermissionServiceProvider extends ServiceProvider
     public function register(): void
     {
         parent::register();
-        $this->app->bind(IGateKeeperRepository::class, GateKeeperRepository::class);
-
+        $this->app->bind(GateKeeperInterface::class, GateKeeper::class);
     }
 }

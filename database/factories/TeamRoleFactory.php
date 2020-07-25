@@ -1,25 +1,15 @@
 <?php
 /** @var Factory $factory */
 
-use Chama\TeamPermission\Tests\Models\Team\Role;
+use Chama\TeamPermission\Models\TeamRole;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| This directory should contain each of the model factory definitions for
-| your application. Factories provide a convenient way to generate new
-| model instances for testing / seeding your application's database.
-|
-*/
-$factory->define(Role::class, static function (Faker $faker) {
+$factory->define(TeamRole::class, static function (Faker $faker) {
     return [];
 });
 
-$factory->state(Role::class, 'spinning_instructor', static function (Faker $faker) {
+$factory->state(TeamRole::class, 'spinning_instructor', static function (Faker $faker) {
     return [
         'name' => 'Instrutor de spinning',
         'enabled' => true,
@@ -44,7 +34,7 @@ $factory->state(Role::class, 'spinning_instructor', static function (Faker $fake
     ];
 });
 
-$factory->state(Role::class, 'chief_spinning_instructor', static function (Faker $faker) {
+$factory->state(TeamRole::class, 'chief_spinning_instructor', static function (Faker $faker) {
     return [
         'name' => 'Coordenador de instrutores de spinning',
         'enabled' => true,
