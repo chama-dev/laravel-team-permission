@@ -39,11 +39,16 @@ class GateKeeper implements GateKeeperInterface
              * Todo: implement Grant and deny rules at Team Member level
              */
             $membership = $team->teamMembers()
+                // Team Role Enabled
                 ->whereHas('teamRole', static function ($query) {
-                    return $query->where('enabled', true);
+                    return $query->where('team_roles.enabled', true);
                 })->with(['teamRole' => static function ($query) {
-                    return $query->where('enabled', true);
-                }])->where('user_id', $user->getKey())->get();
+                    return $query->where('team_roles.enabled', true);
+                }])
+                // Team Member enabled
+                ->where('team_members.enabled', true)
+                ->where('user_id', $user->getKey())->get();
+
             if ($membership->isEmpty()) {
                 return false;
             }

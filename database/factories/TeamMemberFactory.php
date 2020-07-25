@@ -16,3 +16,12 @@ $factory->state(\Chama\TeamPermission\Models\TeamMember::class, 'enabled_spinnin
         'permissions' => null,
     ];
 });
+
+$factory->state(\Chama\TeamPermission\Models\TeamMember::class, 'disabled_spinning_instructor', static function (Faker $faker) {
+    return [
+        'team_role_id' => null,
+        'user_id' => null,
+        'enabled' => false,
+        'permissions' => null,
+    ];
+});

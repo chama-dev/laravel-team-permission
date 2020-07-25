@@ -117,7 +117,7 @@ class GateKeeperTest extends TestCase
         $this->floodWithMoreMembers($instructorRole, 20);
 
         // Disable Team Role
-        $instructorRole->setAttribute('enabled',false)->save();
+        $instructorRole->setAttribute('enabled', false)->save();
 
         /* @var User $user */
         $spinningInstructor = factory(User::class)->state('registered')->create();
@@ -131,13 +131,13 @@ class GateKeeperTest extends TestCase
 
         foreach ($this->testedRoutes() as $route => $permission) {
             // Owner
-            // $this->assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
+            $this->assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
             // Instructor
             $this->assertEquals(false, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor));
         }
     }
 
-    public function test_has_permission_on_team_to(): void
+    public function test_should_not_have_permission_with_disabled_team_member(): void
     {
         // The owner and instructor must be
         /* @var User $owner */
@@ -150,7 +150,7 @@ class GateKeeperTest extends TestCase
 
         /* @var User $user */
         $spinningInstructor = factory(User::class)->state('registered')->create();
-        factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+        factory(TeamMember::class)->state('disabled_spinning_instructor')->create([
             'team_role_id' => $instructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
         ]);
@@ -160,11 +160,40 @@ class GateKeeperTest extends TestCase
 
         foreach ($this->testedRoutes() as $route => $permission) {
             // Owner
-            // $this->assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
+            $this->assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
             // Instructor
-            $this->assertEquals($permission, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor));
+            $this->assertEquals(false, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor));
         }
     }
+
+    public function test_has_permission_on_team_to(): void
+//    {
+//        // The owner and instructor must be
+//        /* @var User $owner */
+//        /* @var Gym $gym */
+//        /* @var TeamRole $instructorRole */
+//        extract($this->makeSetupData('Chama\TeamPermission\Tests\GateKeeperTest::test_should_not_be_owner_of_team'));
+//
+//        // Flood with more members to achieve a better test
+//        $this->floodWithMoreMembers($instructorRole, 20);
+//
+//        /* @var User $user */
+//        $spinningInstructor = factory(User::class)->state('registered')->create();
+//        factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+//            'team_role_id' => $instructorRole->getKey(),
+//            'user_id' => $spinningInstructor->getKey(),
+//        ]);
+//
+//        /* @var GateKeeperInterface $gateKeeper */
+//        $gateKeeper = app(GateKeeperInterface::class);
+//
+//        foreach ($this->testedRoutes() as $route => $permission) {
+//            // Owner
+//            // $this->assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
+//            // Instructor
+//            $this->assertEquals($permission, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor));
+//        }
+//    }
 
 //    public function test_has_permission_on_team_to(): void
 //    {
