@@ -105,7 +105,7 @@ class GateKeeperTest extends TestCase
         $this->assertFalse($gateKeeper->isMemberOfTeam($otherGym['gym'], $spinningInstructor), 'The instructor should not be a member');
     }
 
-    public function test_should_not_have_permission_with_disabled_team_role_to(): void
+    public function test_user_should_not_have_permission_when_his_relation_at_team_role_level_is_disabled(): void
     {
         // The owner and instructor must be
         /* @var User $owner */
@@ -129,7 +129,7 @@ class GateKeeperTest extends TestCase
         /* @var GateKeeperInterface $gateKeeper */
         $gateKeeper = app(GateKeeperInterface::class);
 
-        foreach ($this->testedRoutes() as $route => $permission) {
+        foreach ($this->performedRoutes() as $route => $permission) {
             // Owner
             $this->assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
             // Instructor
@@ -137,7 +137,7 @@ class GateKeeperTest extends TestCase
         }
     }
 
-    public function test_should_not_have_permission_with_disabled_team_member(): void
+    public function test_user_should_not_have_permission_when_his_relation_at_team_member_level_is_disabled(): void
     {
         // The owner and instructor must be
         /* @var User $owner */
@@ -158,15 +158,155 @@ class GateKeeperTest extends TestCase
         /* @var GateKeeperInterface $gateKeeper */
         $gateKeeper = app(GateKeeperInterface::class);
 
-        foreach ($this->testedRoutes() as $route => $permission) {
+        foreach ($this->performedRoutes() as $route => $permission) {
             // Owner
             $this->assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
             // Instructor
             $this->assertEquals(false, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor));
         }
+
     }
 
-    public function test_should_not_have_permission_on_team_to_because_is_blocked_at_team_level(): void
+    public function test_user_should_not_have_access_at_specific_route_when_his_permissions_at_team_member_level_are_denied_even_if_at_team_role_are_enabled(): void
+    {
+        // The owner and instructor must be
+        /* @var User $owner */
+        /* @var Gym $gym */
+        /* @var TeamRole $instructorRole */
+        /* @var TeamRole $chiefInstructorRole */
+        extract($this->makeSetupData('Chama\TeamPermission\Tests\GateKeeperTest::test_should_not_be_owner_of_team'));
+
+        // Flood with more members to achieve a better test
+        $this->floodWithMoreMembers($instructorRole, 20);
+
+        /* @var User $user */
+        $spinningInstructor = factory(User::class)->state('registered')->create();
+        $tm = factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+            'team_role_id' => $instructorRole->getKey(),
+            'user_id' => $spinningInstructor->getKey(),
+            'permissions' => [
+                'denied' => [
+                    'gym.rooms.lessons.students'
+                ]
+            ]
+        ]);
+
+        $joggingInstructorTeamMember = factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+            'team_role_id' => $chiefInstructorRole->getKey(),
+            'user_id' => $spinningInstructor->getKey(),
+            'permissions' => [
+                'granted' => [
+                    'gym.rooms.lessons.students'
+                ]
+            ]
+        ]);
+
+        /* @var GateKeeperInterface $gateKeeper */
+        $gateKeeper = app(GateKeeperInterface::class);
+        self::assertEquals(false, $gateKeeper->hasPermissionOnTeamTo('gym.rooms.lessons.students', $gym, $spinningInstructor));
+//        foreach ($this->performedRoutes() as $route => $permission) {dump($route, $permission, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor));
+//            // Owner
+//            self::assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
+//            // Instructor
+//            self::assertEquals($permission, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor));
+//        }
+    }
+
+
+    public function test_user_should_have_permission_on_team_to_because_is_granted_at_member_level_even_its_blocked_at_team(): void
+    {
+// The owner and instructor must be
+        /* @var User $owner */
+        /* @var Gym $gym */
+        /* @var TeamRole $instructorRole */
+        /* @var TeamRole $chiefInstructorRole */
+        extract($this->makeSetupData('Chama\TeamPermission\Tests\GateKeeperTest::test_should_not_be_owner_of_team'));
+
+        // Flood with more members to achieve a better test
+        $this->floodWithMoreMembers($instructorRole, 20);
+
+        /* @var User $user */
+        $spinningInstructor = factory(User::class)->state('registered')->create();
+        $tm = factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+            'team_role_id' => $instructorRole->getKey(),
+            'user_id' => $spinningInstructor->getKey(),
+        ]);
+
+        $joggingInstructorTeamMember = factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+            'team_role_id' => $chiefInstructorRole->getKey(),
+            'user_id' => $spinningInstructor->getKey(),
+            'permissions' => [
+                'granted' => [
+                    'gym.rooms.lessons.students'
+                ]
+            ]
+        ]);
+
+        /* @var GateKeeperInterface $gateKeeper */
+        $gateKeeper = app(GateKeeperInterface::class);
+        self::assertEquals(true, $gateKeeper->hasPermissionOnTeamTo('gym.rooms.lessons.students', $gym, $spinningInstructor));
+    }
+
+    public function test_user_should_not_have_access_on_route_because_is_not_defined_at_role_level(): void
+    {
+        /* @var User $owner */
+        /* @var Gym $gym */
+        /* @var TeamRole $instructorRole */
+        extract($this->makeSetupData('Chama\TeamPermission\Tests\GateKeeperTest::test_should_not_be_owner_of_team'));
+
+        // Flood with more members to achieve a better test
+        $this->floodWithMoreMembers($instructorRole, 20);
+
+        /* @var User $user */
+        $spinningInstructor = factory(User::class)->state('registered')->create();
+        factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+            'team_role_id' => $instructorRole->getKey(),
+            'user_id' => $spinningInstructor->getKey(),
+        ]);
+
+        /* @var GateKeeperInterface $gateKeeper */
+        $gateKeeper = app(GateKeeperInterface::class);
+
+        foreach ($this->performedRoutes() as $route => $permission) {
+            // Owner
+            self::assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
+            // Instructor
+            self::assertEquals($permission, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor), $route);
+        }
+        self::assertFalse($gateKeeper->hasPermissionOnTeamTo('not.specified.route', $gym, $spinningInstructor));
+    }
+
+    public function test_user_should_not_have_access_on_route_because_is_denied_at_role_level(): void
+    {
+        /* @var User $owner */
+        /* @var Gym $gym */
+        /* @var TeamRole $instructorRole */
+        extract($this->makeSetupData('Chama\TeamPermission\Tests\GateKeeperTest::test_should_not_be_owner_of_team'));
+
+        // Flood with more members to achieve a better test
+        $this->floodWithMoreMembers($instructorRole, 20);
+
+        /* @var User $user */
+        $spinningInstructor = factory(User::class)->state('registered')->create();
+        factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+            'team_role_id' => $instructorRole->getKey(),
+            'user_id' => $spinningInstructor->getKey(),
+        ]);
+
+        /* @var GateKeeperInterface $gateKeeper */
+        $gateKeeper = app(GateKeeperInterface::class);
+
+        foreach ($this->performedRoutes() as $route => $permission) {
+            // Owner
+            self::assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
+            // Instructor
+            self::assertEquals($permission, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor), $route);
+        }
+        self::assertFalse($gateKeeper->hasPermissionOnTeamTo('gym.rooms.post', $gym, $spinningInstructor));
+
+    }
+
+    public function test_user_should_have_permission_on_team_to(): void
     {
         // The owner and instructor must be
         /* @var User $owner */
@@ -187,58 +327,15 @@ class GateKeeperTest extends TestCase
         /* @var GateKeeperInterface $gateKeeper */
         $gateKeeper = app(GateKeeperInterface::class);
 
-        foreach ($this->testedRoutes() as $route => $permission) {
+        foreach ($this->performedRoutes() as $route => $permission) {
             // Owner
-            // $this->assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
+            $this->assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
             // Instructor
-            $this->assertEquals($permission, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor));
+            $this->assertEquals($permission, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor), $route);
         }
     }
-    public function test_should_not_have_permission_on_team_to_because_is_blocked_at_member_level(): void
-    {
 
-    }
-
-    public function test_should_have_permission_on_team_to_because_is_granted_at_member_level_even_its_blocked_at_team(): void
-    {
-
-    }
-
-    public function test_should_not_have_permission_on_team_to_because_is_denied_at_member_level_even_its_allowed_at_team(): void
-    {
-
-    }
-
-//    public function test_has_permission_on_team_to(): void
-//    {
-//        // The owner and instructor must be
-//        /* @var User $owner */
-//        /* @var Gym $gym */
-//        /* @var TeamRole $instructorRole */
-//        extract($this->makeSetupData('Chama\TeamPermission\Tests\GateKeeperTest::test_should_not_be_owner_of_team'));
-//
-//        // Flood with more members to achieve a better test
-//        $this->floodWithMoreMembers($instructorRole, 20);
-//
-//        /* @var User $user */
-//        $spinningInstructor = factory(User::class)->state('registered')->create();
-//        factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
-//            'team_role_id' => $instructorRole->getKey(),
-//            'user_id' => $spinningInstructor->getKey(),
-//        ]);
-//
-//        /* @var GateKeeperInterface $gateKeeper */
-//        $gateKeeper = app(GateKeeperInterface::class);
-//
-//        foreach ($this->testedRoutes() as $route => $permission) {
-//            // Owner
-//            // $this->assertTrue($gateKeeper->hasPermissionOnTeamTo($route, $gym, $owner), 'The owner should had access to everything related to his gym.');
-//            // Instructor
-//            $this->assertEquals($permission, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor));
-//        }
-//    }
-
-    private function testedRoutes(): array
+    private function performedRoutes(): array
     {
         return [
             'gym.rooms' => true, // Somente salas somente com aulas de spinning

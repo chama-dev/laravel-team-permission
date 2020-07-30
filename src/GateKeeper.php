@@ -6,6 +6,7 @@ namespace Chama\TeamPermission;
 
 use Chama\TeamPermission\Contracts\TeamInterface;
 use Chama\TeamPermission\Contracts\GateKeeperInterface;
+use Chama\TeamPermission\Models\TeamMember;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -38,7 +39,7 @@ class GateKeeper implements GateKeeperInterface
              * 4. permissions at team_roles
              * Todo: implement Grant and deny rules at Team Member level
              */
-            $membership = $team->teamMembers()
+            $memberships = $team->teamMembers()
                 // Team Role Enabled
                 ->whereHas('teamRole', static function ($query) {
                     return $query->where('team_roles.enabled', true);
@@ -49,12 +50,39 @@ class GateKeeper implements GateKeeperInterface
                 ->where('team_members.enabled', true)
                 ->where('user_id', $user->getKey())->get();
 
-            if ($membership->isEmpty()) {
+            // Check if the user is a member
+            if ($memberships->isEmpty()) {
                 return false;
             }
 
-            dd($route, $membership->toArray());
-            // ->whereRaw("json_extract(permissions, '$.\"routes\".\"{$route}\"') = true")
+            // Check at TeamMember Level , como o usuário pode estar em vários papéis
+            // Se a rota estiver definida neste nível valida aqui
+            // Todo: Transformar em um reduce, basta um falso na lista para bloquear tudo
+            // O usuário está bloqueado no nível de membro
+            // Todo: ->isGrantedAtMemberLevel() : bool
+
+            if ($memberships->whereNotNull("permissions.denied")->filter(static function (TeamMember $membership) use ($route) {
+                return (in_array($route, $membership->getAttribute('permissions')['denied'], true));
+            })->isNotEmpty()) {
+                return false;
+            }
+
+            // Se nenhum team member tiver bloqueado anteriormente e tiver permissão no nível de membro, já passa
+            // Todo: ->isDeniedAtMemberLevel() : bool
+            if ($memberships->whereNotNull("permissions.granted")->filter(static function (TeamMember $membership) use ($route) {
+                return (in_array($route, $membership->getAttribute('permissions')['granted'], true));
+            })->isNotEmpty()) {
+                return true;
+            }
+
+            //Team Role: Preciso de pelo menos um papel com permissão para passar
+            // Todo: hasPermissionOnRoleTo
+            if ($memberships->whereNotNull('teamRole.permissions.routes')->filter(static function (TeamMember $membership) use ($route) {
+                return (array_key_exists($route, $membership->teamRole->getAttribute('permissions')['routes']) && $membership->teamRole->getAttribute('permissions')['routes'][$route]);
+            })->isNotEmpty()) {
+                return true;
+            }
+            // Algum limbo que ainda não previ. Depois posso reordenar tudo para limpar o código
             return false;
         }
 

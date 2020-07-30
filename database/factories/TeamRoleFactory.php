@@ -14,7 +14,7 @@ $factory->state(TeamRole::class, 'spinning_instructor', static function (Faker $
         'name' => 'Instrutor de spinning',
         'enabled' => true,
         'description' => 'O instrutor de spinning poderá acessar todas as salas de spinning e a lista de todos os alunos inscritos em sua aula.',
-        'permissions' => json_encode([
+        'permissions' => [
             'routes' => [
                 'gym.rooms' => true, // Somente salas somente com aulas de spinning
                 'gym.rooms.create' => false,
@@ -30,7 +30,7 @@ $factory->state(TeamRole::class, 'spinning_instructor', static function (Faker $
                     'type_id' => 'spinning'
                 ]
             ]
-        ], JSON_THROW_ON_ERROR, 512)
+        ]
     ];
 });
 

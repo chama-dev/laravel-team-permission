@@ -11,7 +11,8 @@ class TeamRole extends Model
     protected $table = 'team_roles';
 
     protected $casts = [
-        'enabled' => 'boolean'
+        'enabled' => 'boolean',
+        'permissions' => 'json',
     ];
 
     /**
