@@ -1,4 +1,5 @@
 ![Tests](https://github.com/chama-dev/laravel-team-permission/workflows/Tests/badge.svg?branch=master)
+[![codecov](https://codecov.io/gh/chama-dev/laravel-team-permission/branch/master/graph/badge.svg?token=G0Q1HTFU43)](https://codecov.io/gh/chama-dev/laravel-team-permission)
 
 # Laravel Team Permission
 This package give ability to set permissions to each member of your team.
