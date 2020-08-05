@@ -1,12 +1,10 @@
 # Laravel Team Permission
 This package give ability to set permissions to each member of your team.
 
-This is not a plug and play package and you need to configure acoording to your need.
+This is not a plug and play package, and you need to configure according to your needs.
 
-This is not a ACL package, is just to control routes and the Team Object.
 
 ## Assumptions
-All classes must be extended to avoid decentralized import.
 
 At user scope we have three main roles.
 - Master: A registered user that can do anything;
@@ -15,18 +13,21 @@ At user scope we have three main roles.
 
 This package only handles with authenticated users, that means you decide what has public access in your application.
 
-By default, if a route is not defined, it will be blocked. 
+By default, if a route is not defined it will be blocked. 
+
+Anything can be a Team, and you can set multiple models as a team.
 
 ### Grant Exceptions
 You can give access to specific routes and models to a specific user.
 
-### Deny Excpetions
+### Deny Exceptions
 You can deny access to specific routes and models to a specific user.
  
 ### Models
-Your "Team" model has two main attributes:
+Your "Team" model must have two main attributes:
  - owner_id: The user that owns
- - name: Readable name for your "Team"
+ - name: A readable name for your "Team"
+
 
 ### Middleware
 It's here that magic happens
@@ -65,3 +66,14 @@ Implementar regras de validação por etapas
 4 - Tem alguma regra relacionada ao usuário permitingo ou negando algo
 5 - Tem algum intervalo de liberação
 14 - Convidar um usuário por um link assinado
+
+
+## Próximos passos
+[] Criação de um papel
+[] Associação de um novo membro
+[] Disparos de eventos
+    ??
+[] Testar middleware
+[] Bloqueio de objeto
+[] Geração do json routes no TeamRole
+[] Verificação de novas rotas
