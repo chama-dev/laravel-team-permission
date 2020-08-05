@@ -1,16 +1,15 @@
 <?php
 
-
 namespace Chama\TeamPermission\Http\Middleware;
 
-use Closure;
 use Chama\TeamPermission\Contracts\GateKeeperInterface;
+use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 
 abstract class GateKeeperMiddleware
 {
     /**
-     * You may want define routes that you can skip permissions
+     * You may want define routes that you can skip permissions.
      *
      * @var array
      */
@@ -45,8 +44,8 @@ abstract class GateKeeperMiddleware
      */
     public function handle($request, Closure $next, $options = null)
     {
-        if (!$this->isInExceptList($request->route()->getName())
-            && !$this->team->hasPermissionOnTeamTo(
+        if (! $this->isInExceptList($request->route()->getName())
+            && ! $this->team->hasPermissionOnTeamTo(
                 $request->route()->getName(),
                 $request->route('venue'),
                 auth()->user())
@@ -58,7 +57,7 @@ abstract class GateKeeperMiddleware
     }
 
     /**
-     * Verifica se a rota está na lista de exceção
+     * Verifica se a rota está na lista de exceção.
      *
      * @param string $route
      *

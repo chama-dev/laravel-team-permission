@@ -4,10 +4,9 @@ namespace Chama\TeamPermission\Tests;
 
 use Chama\TeamPermission\Contracts\GateKeeperInterface;
 use Chama\TeamPermission\Models\TeamMember;
-use Chama\TeamPermission\Tests\Models\Gym;
 use Chama\TeamPermission\Models\TeamRole;
+use Chama\TeamPermission\Tests\Models\Gym;
 use Chama\TeamPermission\Tests\Models\User;
-
 
 class GateKeeperTest extends TestCase
 {
@@ -164,7 +163,6 @@ class GateKeeperTest extends TestCase
             // Instructor
             $this->assertEquals(false, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor));
         }
-
     }
 
     public function test_user_should_not_have_access_at_specific_route_when_his_permissions_at_team_member_level_are_denied_even_if_at_team_role_are_enabled(): void
@@ -186,9 +184,9 @@ class GateKeeperTest extends TestCase
             'user_id' => $spinningInstructor->getKey(),
             'permissions' => [
                 'denied' => [
-                    'gym.rooms.lessons.students'
-                ]
-            ]
+                    'gym.rooms.lessons.students',
+                ],
+            ],
         ]);
 
         $joggingInstructorTeamMember = factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
@@ -196,9 +194,9 @@ class GateKeeperTest extends TestCase
             'user_id' => $spinningInstructor->getKey(),
             'permissions' => [
                 'granted' => [
-                    'gym.rooms.lessons.students'
-                ]
-            ]
+                    'gym.rooms.lessons.students',
+                ],
+            ],
         ]);
 
         /* @var GateKeeperInterface $gateKeeper */
@@ -212,10 +210,9 @@ class GateKeeperTest extends TestCase
 //        }
     }
 
-
     public function test_user_should_have_permission_on_team_to_because_is_granted_at_member_level_even_its_blocked_at_team(): void
     {
-// The owner and instructor must be
+        // The owner and instructor must be
         /* @var User $owner */
         /* @var Gym $gym */
         /* @var TeamRole $instructorRole */
@@ -237,9 +234,9 @@ class GateKeeperTest extends TestCase
             'user_id' => $spinningInstructor->getKey(),
             'permissions' => [
                 'granted' => [
-                    'gym.rooms.lessons.students'
-                ]
-            ]
+                    'gym.rooms.lessons.students',
+                ],
+            ],
         ]);
 
         /* @var GateKeeperInterface $gateKeeper */
@@ -303,7 +300,6 @@ class GateKeeperTest extends TestCase
             self::assertEquals($permission, $gateKeeper->hasPermissionOnTeamTo($route, $gym, $spinningInstructor), $route);
         }
         self::assertFalse($gateKeeper->hasPermissionOnTeamTo('gym.rooms.post', $gym, $spinningInstructor));
-
     }
 
     public function test_user_should_have_permission_on_team_to(): void
@@ -349,8 +345,8 @@ class GateKeeperTest extends TestCase
         ];
     }
 
-    public function test_list_allowed_teams_of(): void
-    {
-
-    }
+//    public function test_list_allowed_teams_of(): void
+//    {
+//
+//    }
 }

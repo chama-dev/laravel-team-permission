@@ -1,19 +1,12 @@
 <?php
 
-require __DIR__.'/vendor/autoload.php';
-require __DIR__.'/bootstrap/app.php';
-
-return (new MattAllan\LaravelCodeStyle\Config())
-    ->setFinder(
-        PhpCsFixer\Finder::create()
-            ->in(app_path())
-            ->in(config_path())
-            ->in(database_path('factories'))
-            ->in(database_path('seeds'))
-            ->in(resource_path('lang'))
-            ->in(base_path('routes'))
-            ->in(base_path('tests'))
-    )
-    ->setRules([
-        '@Laravel' => true,
-    ]);
+return (new MattAllan\LaravelCodeStyle\Config())->setFinder(
+    PhpCsFixer\Finder::create()
+        ->in([
+            __DIR__.'/src',
+            __DIR__.'/tests',
+        ])
+        ->name('*.php')
+        ->notName('*.blade.php')
+        ->ignoreDotFiles(true)
+        ->ignoreVCS(true))->setRules(['@Laravel' => true]);

@@ -3,8 +3,8 @@
 namespace Chama\TeamPermission\Tests;
 
 use Chama\TeamPermission\TeamPermissionServiceProvider;
-use Chama\TeamPermission\Tests\Models\User;
 use Chama\TeamPermission\Tests\Models\Gym;
+use Chama\TeamPermission\Tests\Models\User;
 use CreateTeamPermissionTable;
 use Faker\Factory;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -14,7 +14,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -57,6 +56,7 @@ abstract class TestCase extends OrchestraTestCase
     public function setFaker(\Faker\Generator $faker): TestCase
     {
         $this->faker = $faker;
+
         return $this;
     }
 
@@ -76,7 +76,7 @@ abstract class TestCase extends OrchestraTestCase
         ]);
 
         $app['config']->set('auth.providers.users.model', User::class);
-        $app['config']->set('app.key', 'base64:' . base64_encode(
+        $app['config']->set('app.key', 'base64:'.base64_encode(
                 Encrypter::generateKey($app['config']['app.cipher'])
             ));
     }
@@ -90,7 +90,7 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function createTeamPermissionTable(): void
     {
-        include_once __DIR__ . '/../database/migrations/create_team_permission_table.php.stub';
+        include_once __DIR__.'/../database/migrations/create_team_permission_table.php.stub';
         (new CreateTeamPermissionTable())->up();
     }
 
@@ -112,7 +112,6 @@ abstract class TestCase extends OrchestraTestCase
         });
     }
 
-
     protected function seedModels(): void
     {
         // Total of 25 users, having master role the first user
@@ -122,7 +121,6 @@ abstract class TestCase extends OrchestraTestCase
         // Total of 15 Gyms
         factory(Gym::class, 5)->create(['owner_id' => self::USER_FIRST_OWNER_ID]);
         factory(Gym::class, 10)->create(['owner_id' => self::USER_SECOND_OWNER_ID]);
-
     }
 
 //    public function getLastActivity(): ?Activity
@@ -137,7 +135,7 @@ abstract class TestCase extends OrchestraTestCase
 
     public function isLaravel7OrLower(): bool
     {
-        $majorVersion = (int)substr(App::version(), 0, 1);
+        $majorVersion = (int) substr(App::version(), 0, 1);
 
         return $majorVersion <= 7;
     }
@@ -149,6 +147,6 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function setupFactories(): void
     {
-        $this->withFactories(__DIR__ . '/../database/factories');
+        $this->withFactories(__DIR__.'/../database/factories');
     }
 }

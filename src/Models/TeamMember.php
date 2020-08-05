@@ -1,10 +1,7 @@
 <?php
 
-
 namespace Chama\TeamPermission\Models;
 
-
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 /**

@@ -1,19 +1,13 @@
 <?php
 
-
 namespace Chama\TeamPermission\Tests;
-
-use Chama\TeamPermission\Tests\Models\User;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class SetupTest
- * Check if all setup
- * @package Chama\TeamPermission\Test
+ * Check if all setup.
  */
 class SetupTest extends TestCase
 {
-
     public function test_it_all_tables_created(): void
     {
 

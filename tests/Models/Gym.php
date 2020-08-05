@@ -1,14 +1,10 @@
 <?php
 
-
 namespace Chama\TeamPermission\Tests\Models;
 
-
 use Chama\TeamPermission\Contracts\TeamInterface;
-use Chama\TeamPermission\Models\TeamMember;
 use Chama\TeamPermission\Models\TeamRole;
 use Chama\TeamPermission\Traits\TeamTrait;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 class Gym extends Model implements TeamInterface
@@ -33,5 +29,4 @@ class Gym extends Model implements TeamInterface
     {
         return $this->getAttribute('owner_id');
     }
-
 }

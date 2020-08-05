@@ -1,19 +1,16 @@
 <?php
 
-
 namespace Chama\TeamPermission\Traits;
-
 
 use Chama\TeamPermission\Contracts\TeamInterface;
 use Chama\TeamPermission\Models\TeamMember;
 use Chama\TeamPermission\Models\TeamRole;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Query\Builder;
 
 trait TeamTrait
 {
     /**
-     * Transforma um usuário em um membro da equipe
+     * Transforma um usuário em um membro da equipe.
      * @param Authenticatable $user
      * @return TeamInterface|TeamTrait
      */
@@ -23,7 +20,7 @@ trait TeamTrait
     }
 
     /**
-     * Lets use a explicit name, feel free to change at your model
+     * Lets use a explicit name, feel free to change at your model.
      * @return mixed
      */
     public function teamMembers(): \Illuminate\Database\Eloquent\Relations\HasManyThrough

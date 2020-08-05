@@ -1,10 +1,9 @@
 <?php
 
-
 namespace Chama\TeamPermission\Tests;
 
-use Chama\TeamPermission\Tests\Models\Gym;
 use Chama\TeamPermission\Models\TeamRole;
+use Chama\TeamPermission\Tests\Models\Gym;
 use Chama\TeamPermission\Tests\Models\User;
 
 class CreateTeamRoleTest extends TestCase
