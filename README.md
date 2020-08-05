@@ -1,3 +1,5 @@
+![Tests](https://github.com/chama-dev/laravel-team-permission/workflows/Tests/badge.svg)
+
 # Laravel Team Permission
 This package give ability to set permissions to each member of your team.
 
