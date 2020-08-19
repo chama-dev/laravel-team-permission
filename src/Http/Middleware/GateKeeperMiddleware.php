@@ -3,8 +3,12 @@
 namespace Chama\TeamPermission\Http\Middleware;
 
 use Chama\TeamPermission\Contracts\GateKeeperInterface;
+use Chama\TeamPermission\Contracts\TeamInterface;
+use Chama\TeamPermission\Traits\TeamTrait;
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\Request;
 
 abstract class GateKeeperMiddleware
 {
@@ -13,19 +17,17 @@ abstract class GateKeeperMiddleware
      *
      * @var array
      */
-    protected $skip = [
-        // manager.dashboard
-    ];
+    protected array $except = [];
 
     /**
      * @var GateKeeperInterface
      */
-    private $team;
+    private GateKeeperInterface $team;
 
     /**
      * Gate Keeper constructor.
      *
-     * @param GateKeeperInterface $team
+     * @param  GateKeeperInterface  $team
      */
     public function __construct(GateKeeperInterface $team)
     {
@@ -35,21 +37,17 @@ abstract class GateKeeperMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param Closure $next
-     * @param null $options
+     * @param  Request  $request
+     * @param  Closure  $next
+     * @param  null  $options
      *
      * @return mixed
      * @throws AuthorizationException
      */
     public function handle($request, Closure $next, $options = null)
     {
-        if (! $this->isInExceptList($request->route()->getName())
-            && ! $this->team->hasPermissionOnTeamTo(
-                $request->route()->getName(),
-                $request->route('venue'),
-                auth()->user())
-        ) {
+        if (!$this->isInExceptList($route = $this->getRouteName($request))
+            && !$this->hasPermissionOnTeamTo($route, $this->getTeam($request), $request->user())) {
             throw new AuthorizationException(__('You are not allowed to access this action or resource.'));
         }
 
@@ -57,14 +55,40 @@ abstract class GateKeeperMiddleware
     }
 
     /**
-     * Verifica se a rota está na lista de exceção.
+     * Check if the route is in except list
      *
-     * @param string $route
+     * @param  string  $route
      *
      * @return bool
      */
-    private function isInExceptList(string $route): bool
+    protected function isInExceptList(string $route): bool
     {
-        return in_array($route, $this->except);
+        return in_array($route, $this->getExcept(), true);
+    }
+
+    /**
+     * Return team to validate
+     *
+     * @param  Request  $request
+     * @return TeamInterface
+     */
+    abstract protected function getTeam(Request $request): TeamInterface;
+
+    public function getRouteName(Request $request): string
+    {
+        return $request->route()->getName();
+    }
+
+    protected function hasPermissionOnTeamTo(string $route, TeamInterface $team, Authenticatable $user): bool
+    {
+        return $this->team->hasPermissionOnTeamTo($route, $team, $user);
+    }
+
+    /**
+     * @return array
+     */
+    public function getExcept(): array
+    {
+        return $this->except;
     }
 }
