@@ -4,7 +4,6 @@ namespace Chama\TeamPermission\Http\Middleware;
 
 use Chama\TeamPermission\Contracts\GateKeeperInterface;
 use Chama\TeamPermission\Contracts\TeamInterface;
-use Chama\TeamPermission\Traits\TeamTrait;
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -46,8 +45,8 @@ abstract class GateKeeperMiddleware
      */
     public function handle($request, Closure $next, $options = null)
     {
-        if (!$this->isInExceptList($route = $this->getRouteName($request))
-            && !$this->hasPermissionOnTeamTo($route, $this->getTeam($request), $request->user())) {
+        if (! $this->isInExceptList($route = $this->getRouteName($request))
+            && ! $this->hasPermissionOnTeamTo($route, $this->getTeam($request), $request->user())) {
             throw new AuthorizationException(__('You are not allowed to access this action or resource.'));
         }
 
@@ -55,7 +54,7 @@ abstract class GateKeeperMiddleware
     }
 
     /**
-     * Check if the route is in except list
+     * Check if the route is in except list.
      *
      * @param  string  $route
      *
@@ -67,7 +66,7 @@ abstract class GateKeeperMiddleware
     }
 
     /**
-     * Return team to validate
+     * Return team to validate.
      *
      * @param  Request  $request
      * @return TeamInterface
