@@ -7,6 +7,7 @@ use Chama\TeamPermission\Tests\Models\Gym;
 use Chama\TeamPermission\Tests\Models\User;
 use CreateTeamPermissionTable;
 use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Encryption\Encrypter;
@@ -22,9 +23,9 @@ abstract class TestCase extends OrchestraTestCase
     public const USER_SECOND_OWNER_ID = 12;
 
     /**
-     * @var \Faker\Generator
+     * @var Generator
      */
-    protected \Faker\Generator $faker;
+    protected $faker;
 
     public function setUp(): void
     {
@@ -50,10 +51,10 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * @param \Faker\Generator $faker
+     * @param Generator $faker
      * @return TestCase
      */
-    public function setFaker(\Faker\Generator $faker): TestCase
+    public function setFaker(Generator $faker): TestCase
     {
         $this->faker = $faker;
 
