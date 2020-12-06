@@ -14,10 +14,10 @@ class GateKeeperTest extends TestCase
     {
         /* @var User $owner */
         /* @var Gym $gym */
-        $owner = factory(User::class)->state('registered')->create(['name' => $ownerName]);
-        $gym = factory(Gym::class)->create(['owner_id' => $owner->getKey()]);
-        $gym->roles()->save($instructorRole = factory(TeamRole::class)->state('spinning_instructor')->make());
-        $gym->roles()->save($chiefInstructorRole = factory(TeamRole::class)->state('chief_spinning_instructor')->make());
+        $owner = User::factory()->registered()->create(['name' => $ownerName]);
+        $gym = Gym::factory()->create(['owner_id' => $owner->getKey()]);
+        $gym->roles()->save($instructorRole = TeamRole::factory()->spinningInstructor()->make());
+        $gym->roles()->save($chiefInstructorRole = TeamRole::factory()->chiefSpinningInstructor()->make());
         $gym->refresh();
         $this->assertCount(2, $gym->roles);
 
@@ -28,8 +28,8 @@ class GateKeeperTest extends TestCase
     {
         /* @var User $spinningInstructor */
         for ($i = 0; $i < $quantity; $i++) {
-            $spinningInstructor = factory(User::class)->state('registered')->create();
-            factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+            $spinningInstructor = User::factory()->registered()->create();
+            TeamMember::factory()->enabledSpinningInstructor()->create([
                 'team_role_id' => $role->getKey(),
                 'user_id' => $spinningInstructor->getKey(),
             ]);
@@ -62,7 +62,7 @@ class GateKeeperTest extends TestCase
         extract($this->makeSetupData('Chama\TeamPermission\Tests\GateKeeperTest::test_should_not_be_owner_of_team'));
 
         /* @var User $user */
-        $user = factory(User::class)->state('registered')->create();
+        $user = User::factory()->registered()->create();
 
         /* @var GateKeeperInterface $gateKeeper */
         $gateKeeper = app(GateKeeperInterface::class);
@@ -86,8 +86,8 @@ class GateKeeperTest extends TestCase
         $this->floodWithMoreMembers($instructorRole, 20);
 
         /* @var User $user */
-        $spinningInstructor = factory(User::class)->state('registered')->create();
-        factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+        $spinningInstructor = User::factory()->registered()->create();
+        TeamMember::factory()->enabledSpinningInstructor()->create([
             'team_role_id' => $instructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
         ]);
@@ -119,8 +119,8 @@ class GateKeeperTest extends TestCase
         $instructorRole->setAttribute('enabled', false)->save();
 
         /* @var User $user */
-        $spinningInstructor = factory(User::class)->state('registered')->create();
-        factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+        $spinningInstructor = User::factory()->registered()->create();
+        TeamMember::factory()->enabledSpinningInstructor()->create([
             'team_role_id' => $instructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
         ]);
@@ -148,8 +148,8 @@ class GateKeeperTest extends TestCase
         $this->floodWithMoreMembers($instructorRole, 20);
 
         /* @var User $user */
-        $spinningInstructor = factory(User::class)->state('registered')->create();
-        factory(TeamMember::class)->state('disabled_spinning_instructor')->create([
+        $spinningInstructor = User::factory()->registered()->create();
+        TeamMember::factory()->disabledSpinningInstructor()->create([
             'team_role_id' => $instructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
         ]);
@@ -178,8 +178,8 @@ class GateKeeperTest extends TestCase
         $this->floodWithMoreMembers($instructorRole, 20);
 
         /* @var User $user */
-        $spinningInstructor = factory(User::class)->state('registered')->create();
-        $tm = factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+        $spinningInstructor = User::factory()->registered()->create();
+        $tm = TeamMember::factory()->enabledSpinningInstructor()->create([
             'team_role_id' => $instructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
             'permissions' => [
@@ -189,7 +189,7 @@ class GateKeeperTest extends TestCase
             ],
         ]);
 
-        $joggingInstructorTeamMember = factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+        $joggingInstructorTeamMember = TeamMember::factory()->enabledSpinningInstructor()->create([
             'team_role_id' => $chiefInstructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
             'permissions' => [
@@ -223,13 +223,13 @@ class GateKeeperTest extends TestCase
         $this->floodWithMoreMembers($instructorRole, 20);
 
         /* @var User $user */
-        $spinningInstructor = factory(User::class)->state('registered')->create();
-        $tm = factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+        $spinningInstructor = User::factory()->registered()->create();
+        $tm = TeamMember::factory()->enabledSpinningInstructor()->create([
             'team_role_id' => $instructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
         ]);
 
-        $joggingInstructorTeamMember = factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+        $joggingInstructorTeamMember = TeamMember::factory()->enabledSpinningInstructor()->create([
             'team_role_id' => $chiefInstructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
             'permissions' => [
@@ -255,8 +255,8 @@ class GateKeeperTest extends TestCase
         $this->floodWithMoreMembers($instructorRole, 20);
 
         /* @var User $user */
-        $spinningInstructor = factory(User::class)->state('registered')->create();
-        factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+        $spinningInstructor = User::factory()->registered()->create();
+        TeamMember::factory()->enabledSpinningInstructor()->create([
             'team_role_id' => $instructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
         ]);
@@ -284,8 +284,8 @@ class GateKeeperTest extends TestCase
         $this->floodWithMoreMembers($instructorRole, 20);
 
         /* @var User $user */
-        $spinningInstructor = factory(User::class)->state('registered')->create();
-        factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+        $spinningInstructor = User::factory()->registered()->create();
+        TeamMember::factory()->enabledSpinningInstructor()->create([
             'team_role_id' => $instructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
         ]);
@@ -314,8 +314,8 @@ class GateKeeperTest extends TestCase
         $this->floodWithMoreMembers($instructorRole, 20);
 
         /* @var User $user */
-        $spinningInstructor = factory(User::class)->state('registered')->create();
-        factory(TeamMember::class)->state('enabled_spinning_instructor')->create([
+        $spinningInstructor = User::factory()->registered()->create();
+        TeamMember::factory()->enabledSpinningInstructor()->create([
             'team_role_id' => $instructorRole->getKey(),
             'user_id' => $spinningInstructor->getKey(),
         ]);

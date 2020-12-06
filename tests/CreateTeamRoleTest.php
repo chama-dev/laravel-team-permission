@@ -21,8 +21,8 @@ class CreateTeamRoleTest extends TestCase
 
         /* @var TeamRole $role */
 
-        $gym->roles()->save($instructorRole = factory(TeamRole::class)->state('spinning_instructor')->make());
-        $gym->roles()->save($chiefInstructorRole = factory(TeamRole::class)->state('chief_spinning_instructor')->make());
+        $gym->roles()->save($instructorRole = TeamRole::factory()->spinningInstructor()->make());
+        $gym->roles()->save($chiefInstructorRole = TeamRole::factory()->chiefSpinningInstructor()->make());
         $gym->refresh();
         $this->assertCount(2, $gym->roles);
         $this->assertEquals($gym->getKey(), $instructorRole->getAttribute('team_id'));

@@ -8,6 +8,9 @@ namespace Chama\TeamPermission\Tests;
  */
 class SetupTest extends TestCase
 {
+    /**
+     * @test
+     */
     public function test_it_all_tables_created(): void
     {
 

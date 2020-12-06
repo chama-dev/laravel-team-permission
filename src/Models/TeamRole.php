@@ -2,10 +2,13 @@
 
 namespace Chama\TeamPermission\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TeamRole extends Model
 {
+    use HasFactory;
+
     protected $table = 'team_roles';
 
     protected $casts = [

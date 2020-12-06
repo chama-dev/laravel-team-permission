@@ -3,12 +3,13 @@
 namespace Chama\TeamPermission\Tests\Models;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model implements Authenticatable
 {
     // use HasTeams; Todo: Implementar a Trait HasTeams
-
+    use HasFactory;
     protected const MASTER = 'master';
     protected const REGISTERED = 'registered';
 

@@ -1,27 +1,39 @@
 <?php
-/** @var Factory $factory */
 
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
+namespace Chama\TeamPermission\Database\Factories;
 
-$factory->define(\Chama\TeamPermission\Models\TeamMember::class, static function (Faker $faker) {
-    return [];
-});
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Chama\TeamPermission\Models\TeamMember;
 
-$factory->state(\Chama\TeamPermission\Models\TeamMember::class, 'enabled_spinning_instructor', static function (Faker $faker) {
-    return [
-        'team_role_id' => null,
-        'user_id' => null,
-        'enabled' => true,
-        'permissions' => null,
-    ];
-});
+class TeamMemberFactory extends Factory
+{
+    protected $model = TeamMember::class;
 
-$factory->state(\Chama\TeamPermission\Models\TeamMember::class, 'disabled_spinning_instructor', static function (Faker $faker) {
-    return [
-        'team_role_id' => null,
-        'user_id' => null,
-        'enabled' => false,
-        'permissions' => null,
-    ];
-});
+    public function definition(): array
+    {
+        return [
+            'team_role_id' => null,
+            'user_id' => null,
+            'enabled' => false,
+            'permissions' => null,
+        ];
+    }
+
+    public function enabledSpinningInstructor(): TeamMemberFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'enabled' => true,
+            ];
+        });
+    }
+
+    public function disabledSpinningInstructor(): TeamMemberFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'enabled' => false,
+            ];
+        });
+    }
+}

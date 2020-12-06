@@ -1,13 +1,19 @@
 <?php
-/** @var Factory $factory */
 
+namespace Chama\TeamPermission\Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Chama\TeamPermission\Tests\Models\Gym;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
 
-$factory->define(Gym::class, static function (Faker $faker) {
-    return [
-        'name' => $faker->company,
-        'owner_id' => null
-    ];
-});
+class GymFactory extends Factory
+{
+    protected $model = Gym::class;
+
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->company,
+            'owner_id' => null
+        ];
+    }
+}

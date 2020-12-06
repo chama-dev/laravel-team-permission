@@ -5,11 +5,12 @@ namespace Chama\TeamPermission\Tests\Models;
 use Chama\TeamPermission\Contracts\TeamInterface;
 use Chama\TeamPermission\Models\TeamRole;
 use Chama\TeamPermission\Traits\TeamTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Gym extends Model implements TeamInterface
 {
-    use TeamTrait;
+    use TeamTrait, HasFactory;
 
     /**
      * The table associated with the model.

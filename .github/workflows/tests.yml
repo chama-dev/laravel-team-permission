@@ -13,11 +13,11 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [7.4]
+        php: [8.*]
         dependency-version: [prefer-lowest, prefer-stable]
         include:
-          - php-versions: 7.4
-          - testbench: 5.*
+          - php-versions: 8.*
+          - testbench: 6.*
 
     name: P${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
