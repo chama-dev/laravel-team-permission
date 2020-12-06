@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -26,12 +26,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ~/.composer/cache/files
-          key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -40,15 +34,17 @@ jobs:
           coverage: pcov
 
       - name: Setup problem matchers
-          run: |
+        run: |
             echo "::add-matcher::${{ runner.tool_cache }}/php.json"
             echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
+      - name: Install dependencies
+        run: |
+            composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+            composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
       - name: Validate Composer files
         run: composer validate
-
-      - name: Install dependencies
-        run: composer update ${{ matrix.stability }}  --prefer-dist --no-interaction --no-progress --no-suggest
 
       - name: Run test suite
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
